@@ -65,13 +65,10 @@ class _HomeState extends State<Home> {
                 MaterialButton(
                   onPressed: () {
                     postdata();
-                    Future.delayed(Duration(seconds: 1), () {
+                    Future.delayed(Duration(milliseconds: 200), () {
                       getdata();
                     });
                     _userTask.clear();
-                    setState(() {
-                      generateEmptyFunction();
-                    });
                   },
                   color: Colors.blue[300],
                   child: const Text(
@@ -82,7 +79,6 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   height: 50,
                 ),
-                //if(example != null) ? for (var i = 0; i < 6; i++) Text('${example[i]["task"]}') : null;
                 generateEmptyFunction()
               ],
             ),
@@ -109,8 +105,9 @@ class _HomeState extends State<Home> {
                     //DELETE BUTTON
                     trailing: IconButton(
                         onPressed: () {
-                          setState(() {
-                            // deletedata('${example[index]["_id"]}');
+                          deletedata('${example[index]["_id"]}');
+                          Future.delayed(Duration(milliseconds: 200), () {
+                            getdata();
                           });
                         },
                         icon: Icon(Icons.delete)),
@@ -141,10 +138,10 @@ class _HomeState extends State<Home> {
     print(example);
   }
 
-  /*Future deletedata(String _id) async {
+  Future deletedata(String _id) async {
     var deleteResponse =
         await http.delete(Uri.parse("http://127.0.0.1:8000/posts/${_id}"));
-  }*/
+  }
 }
 /*
 Expanded(
