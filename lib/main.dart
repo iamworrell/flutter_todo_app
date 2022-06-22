@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:todo_application/global_variables.dart';
 
 void main() {
   runApp(MaterialApp(home: Home()));
@@ -15,18 +16,31 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Future getdata() async {
+  /*  To post Data to API
+    Future postdata() async {
+        var res = await http.post(Uri.parse("http://127.0.0.1:8000/posts"),
+        body: jsonEncode({"task": "Added Task from Api"}),
+        headers: {"Content-type": "application/json"}); */
+  /*  To get Data from API
     var res = await http.get(Uri.parse("http://127.0.0.1:8000/posts"));
-    print(res.statusCode);
-    print(res.body);
+    */
+
+  /*  To Get Task From Each Object in Array
     var response = jsonDecode(res.body);
-    print(response);
-    print('Hello');
-  }
+    var selectObject = response[1];
+    print(selectObject["task"]); */
 
   dynamic _userTask = TextEditingController();
   List tasks = <String>[];
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
+
+  @override
+  var example = null;
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -50,10 +64,14 @@ class _HomeState extends State<Home> {
                 ),
                 MaterialButton(
                   onPressed: () {
-                    getdata();
-                    tasks.add(_userTask.text);
-                    setState(() {});
+                    postdata();
+                    Future.delayed(Duration(seconds: 1), () {
+                      getdata();
+                    });
                     _userTask.clear();
+                    setState(() {
+                      generateEmptyFunction();
+                    });
                   },
                   color: Colors.blue[300],
                   child: const Text(
@@ -64,7 +82,72 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   height: 50,
                 ),
-                Expanded(
+                //if(example != null) ? for (var i = 0; i < 6; i++) Text('${example[i]["task"]}') : null;
+                generateEmptyFunction()
+              ],
+            ),
+          ),
+        ));
+  }
+
+  generateEmptyFunction() {
+    if (example != null) {
+      return Expanded(
+        child: ListView.builder(
+            itemCount: example.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  color: Colors.blue[200],
+                  child: ListTile(
+                    //EDIT BUTTON
+                    leading: IconButton(
+                        onPressed: () {}, icon: Icon(Icons.settings)),
+                    //TASKS
+                    title: Text('${example[index]["task"]}'),
+                    //DELETE BUTTON
+                    trailing: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            // deletedata('${example[index]["_id"]}');
+                          });
+                        },
+                        icon: Icon(Icons.delete)),
+                    dense: false,
+                  ),
+                ),
+              );
+            }),
+      );
+    } else {
+      return Text('Please Add a Task');
+    }
+    return Text('');
+  }
+
+  Future postdata() async {
+    var post = await http.post(Uri.parse("http://127.0.0.1:8000/posts"),
+        body: jsonEncode({"task": "${_userTask.text}"}),
+        headers: {"Content-type": "application/json"});
+  }
+
+  Future getdata() async {
+    var getResponse = await http.get(Uri.parse("http://127.0.0.1:8000/posts"));
+    var response = jsonDecode(getResponse.body);
+    setState(() {
+      example = response;
+    });
+    print(example);
+  }
+
+  /*Future deletedata(String _id) async {
+    var deleteResponse =
+        await http.delete(Uri.parse("http://127.0.0.1:8000/posts/${_id}"));
+  }*/
+}
+/*
+Expanded(
                   child: ListView.builder(
                       itemCount: tasks.length,
                       itemBuilder: (context, index) {
@@ -77,7 +160,7 @@ class _HomeState extends State<Home> {
                               leading: IconButton(
                                   onPressed: () {}, icon: Icon(Icons.settings)),
                               //TASKS
-                              title: Text('${tasks[index]}'),
+                              title: Text('Hello'),
                               //DELETE BUTTON
                               trailing: IconButton(
                                   onPressed: () {}, icon: Icon(Icons.delete)),
@@ -87,9 +170,6 @@ class _HomeState extends State<Home> {
                         );
                       }),
                 )
-              ],
-            ),
-          ),
-        ));
-  }
-}
+
+                            */
+
