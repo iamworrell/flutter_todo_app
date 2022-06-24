@@ -97,9 +97,6 @@ class _HomeState extends State<Home> {
                 child: Container(
                   color: Colors.blue[200],
                   child: ListTile(
-                    //EDIT BUTTON
-                    leading: IconButton(
-                        onPressed: () {}, icon: Icon(Icons.settings)),
                     //TASKS
                     title: Text('${example[index]["task"]}'),
                     //DELETE BUTTON
